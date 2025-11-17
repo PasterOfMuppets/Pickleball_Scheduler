@@ -58,9 +58,41 @@ def generate_availability_blocks():
     Generates blocks for current week + next week (2-week window).
     """
     logger.info("Running availability block generation...")
-    # TODO: Implement block generation logic (from Phase 2)
-    # This will be implemented when we add the availability service
-    logger.info("Block generation completed")
+    db = SessionLocal()
+    try:
+        from app.services.availability import generate_blocks_for_user
+        from app.models.user import User
+
+        # Get all active users (not on vacation, not inactive)
+        active_users = db.query(User).filter(
+            User.status.in_(['active'])
+        ).all()
+
+        total_users = len(active_users)
+        total_blocks = 0
+        failed_users = []
+
+        for user in active_users:
+            try:
+                blocks = generate_blocks_for_user(db, user.id)
+                total_blocks += len(blocks)
+                if blocks:
+                    logger.debug(f"Generated {len(blocks)} blocks for user {user.id} ({user.name})")
+            except Exception as user_error:
+                logger.error(f"Failed to generate blocks for user {user.id} ({user.name}): {user_error}")
+                failed_users.append(user.id)
+                # Continue with other users even if one fails
+                continue
+
+        logger.info(f"Block generation completed: {total_blocks} blocks generated for {total_users} users")
+        if failed_users:
+            logger.warning(f"Failed to generate blocks for {len(failed_users)} users: {failed_users}")
+
+    except Exception as e:
+        logger.error(f"Error during block generation: {e}")
+        db.rollback()
+    finally:
+        db.close()
 
 
 def check_vacation_end():
@@ -189,7 +221,6 @@ def start_scheduler():
     )
 
     # Availability block generation - nightly at 2 AM league time
-    # TODO: Adjust timezone to league timezone once we implement proper timezone handling
     scheduler.add_job(
         generate_availability_blocks,
         trigger=CronTrigger(hour=2, minute=0, timezone=settings.LEAGUE_TIMEZONE),
