@@ -34,3 +34,8 @@ def combine_date_time_local(date_obj: date, time_obj: time) -> datetime:
 def get_current_league_time() -> datetime:
     """Get current time in league timezone."""
     return datetime.now(get_league_timezone())
+
+
+def utc_now() -> datetime:
+    """Get current time in UTC."""
+    return datetime.now(ZoneInfo("UTC"))
