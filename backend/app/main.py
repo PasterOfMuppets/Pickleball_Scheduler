@@ -1,4 +1,6 @@
 """FastAPI application entry point."""
+import logging
+from contextlib import asynccontextmanager
 from fastapi import FastAPI
 from fastapi.middleware.cors import CORSMiddleware
 from slowapi import Limiter, _rate_limit_exceeded_handler
@@ -6,6 +8,27 @@ from slowapi.util import get_remote_address
 from slowapi.errors import RateLimitExceeded
 
 from app.config import settings
+from app.background.jobs import start_scheduler, shutdown_scheduler
+
+# Configure logging
+logging.basicConfig(
+    level=logging.INFO if not settings.DEBUG else logging.DEBUG,
+    format='%(asctime)s - %(name)s - %(levelname)s - %(message)s'
+)
+logger = logging.getLogger(__name__)
+
+
+@asynccontextmanager
+async def lifespan(app: FastAPI):
+    """Handle startup and shutdown events."""
+    # Startup
+    logger.info("Starting application...")
+    start_scheduler()
+    yield
+    # Shutdown
+    logger.info("Shutting down application...")
+    shutdown_scheduler()
+
 
 # Initialize rate limiter
 limiter = Limiter(key_func=get_remote_address)
@@ -15,6 +38,7 @@ app = FastAPI(
     title=settings.APP_NAME,
     version=settings.VERSION,
     debug=settings.DEBUG,
+    lifespan=lifespan,
 )
 
 # Add rate limiter to app state
@@ -63,8 +87,9 @@ def health_check_db():
 
 
 # Import and include routers
-from app.routes import auth, users, availability
+from app.routes import auth, users, availability, matches
 
 app.include_router(auth.router, prefix="/api/auth", tags=["Authentication"])
 app.include_router(users.router, prefix="/api/users", tags=["Users"])
 app.include_router(availability.router, prefix="/api/availability", tags=["Availability"])
+app.include_router(matches.router, prefix="/api/matches", tags=["Matches"])
