@@ -14,8 +14,8 @@ from app.database import Base
 from app.config import settings
 
 # Import all models here so Alembic can detect them
-# from app.models.user import User
-# from app.models.availability import RecurringAvailability, AvailabilityBlock
+from app.models.user import User
+from app.models.availability import RecurringAvailability, AvailabilityBlock
 # from app.models.match import Match
 # from app.models.notification import NotificationPreferences, NotificationQueue
 # from app.models.admin import AdminActionLog

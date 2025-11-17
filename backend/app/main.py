@@ -17,6 +17,21 @@ app = FastAPI(
     debug=settings.DEBUG,
 )
 
+
+# Startup and shutdown events
+@app.on_event("startup")
+async def startup_event():
+    """Start background jobs on application startup."""
+    from app.background.jobs import start_background_jobs
+    start_background_jobs()
+
+
+@app.on_event("shutdown")
+async def shutdown_event():
+    """Stop background jobs on application shutdown."""
+    from app.background.jobs import stop_background_jobs
+    stop_background_jobs()
+
 # Add rate limiter to app state
 app.state.limiter = limiter
 app.add_exception_handler(RateLimitExceeded, _rate_limit_exceeded_handler)
@@ -62,8 +77,14 @@ def health_check_db():
         return {"status": "unhealthy", "database": "disconnected", "error": str(e)}
 
 
-# Import and include routers (will add these as we build features)
-# from app.routes import auth, users, availability, matches, overlap, notifications, admin
-# app.include_router(auth.router, prefix="/api/auth", tags=["auth"])
-# app.include_router(users.router, prefix="/api/users", tags=["users"])
+# Import and include routers
+from app.routes import availability
+
+# Include routers
+app.include_router(availability.router)
+
+# Additional routers will be added in future phases:
+# from app.routes import auth, users, matches, overlap, notifications, admin
+# app.include_router(auth.router)
+# app.include_router(users.router)
 # etc.
