@@ -38,14 +38,14 @@ cp .env.example .env
 alembic upgrade head
 
 # Start development server
-uvicorn app.main:app --reload
+uvicorn app.main:app --reload --port 6900
 ```
 
 Backend will be available at:
-- API: http://localhost:8000
-- Swagger docs: http://localhost:8000/docs
-- Health check: http://localhost:8000/health
-- Database health: http://localhost:8000/health/db
+- API: http://localhost:6900
+- Swagger docs: http://localhost:6900/docs
+- Health check: http://localhost:6900/health
+- Database health: http://localhost:6900/health/db
 
 ### 3. Set Up Frontend
 
@@ -119,7 +119,7 @@ alembic upgrade head
 alembic revision --autogenerate -m "description"
 
 # Start server
-uvicorn app.main:app --reload
+uvicorn app.main:app --reload --port 6900
 
 # Run tests
 pytest

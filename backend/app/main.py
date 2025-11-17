@@ -62,8 +62,9 @@ def health_check_db():
         return {"status": "unhealthy", "database": "disconnected", "error": str(e)}
 
 
-# Import and include routers (will add these as we build features)
-# from app.routes import auth, users, availability, matches, overlap, notifications, admin
-# app.include_router(auth.router, prefix="/api/auth", tags=["auth"])
-# app.include_router(users.router, prefix="/api/users", tags=["users"])
-# etc.
+# Import and include routers
+from app.routes import auth, users, availability
+
+app.include_router(auth.router, prefix="/api/auth", tags=["Authentication"])
+app.include_router(users.router, prefix="/api/users", tags=["Users"])
+app.include_router(availability.router, prefix="/api/availability", tags=["Availability"])
