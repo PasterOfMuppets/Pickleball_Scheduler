@@ -30,6 +30,9 @@ const Navbar: React.FC = () => {
               <Link to="/availability" className="hover:bg-blue-700 px-3 py-2 rounded-md">
                 Availability
               </Link>
+              <Link to="/matches" className="hover:bg-blue-700 px-3 py-2 rounded-md">
+                Matches
+              </Link>
             </div>
           </div>
           <div className="flex items-center space-x-4">

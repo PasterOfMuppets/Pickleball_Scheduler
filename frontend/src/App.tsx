@@ -5,6 +5,8 @@ import Login from './pages/Login';
 import Register from './pages/Register';
 import Dashboard from './pages/Dashboard';
 import Availability from './pages/Availability';
+import Matches from './pages/Matches';
+import MatchDetail from './pages/MatchDetail';
 import ProtectedRoute from './components/ProtectedRoute';
 
 function App() {
@@ -29,6 +31,22 @@ function App() {
               element={
                 <ProtectedRoute>
                   <Availability />
+                </ProtectedRoute>
+              }
+            />
+            <Route
+              path="/matches"
+              element={
+                <ProtectedRoute>
+                  <Matches />
+                </ProtectedRoute>
+              }
+            />
+            <Route
+              path="/matches/:id"
+              element={
+                <ProtectedRoute>
+                  <MatchDetail />
                 </ProtectedRoute>
               }
             />
