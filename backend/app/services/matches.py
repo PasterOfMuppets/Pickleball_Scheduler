@@ -9,6 +9,11 @@ from sqlalchemy import and_, or_
 from app.models.match import Match
 from app.models.user import User
 from app.utils.timezone import utc_now, league_time_to_utc
+from app.services.notifications import (
+    queue_notification,
+    schedule_match_reminders,
+    cancel_match_reminders
+)
 
 
 class ConflictError(Exception):
@@ -123,6 +128,19 @@ def create_challenge(
     db.commit()
     db.refresh(match)
 
+    # Notify Player B about the challenge
+    queue_notification(
+        db,
+        player_b_id,
+        'challenge_received',
+        f"{player_a.name} has challenged you to a match on {start_time.strftime('%A, %B %d at %I:%M %p')}. "
+        f"Duration: {duration_minutes} minutes. Please respond within 48 hours.",
+        priority='high',
+        channel='both',
+        subject='New Match Challenge',
+        metadata={'match_id': match.id, 'challenger_id': player_a_id}
+    )
+
     return match
 
 
@@ -177,6 +195,27 @@ def accept_challenge(db: Session, match_id: int, user_id: int) -> Match:
     db.commit()
     db.refresh(match)
 
+    # Get player names for notifications
+    player_a = db.query(User).filter(User.id == match.player_a_id).first()
+    player_b = db.query(User).filter(User.id == match.player_b_id).first()
+
+    # Notify Player A that the match was accepted
+    queue_notification(
+        db,
+        match.player_a_id,
+        'match_accepted',
+        f"{player_b.name} has accepted your match challenge on {match.start_time.strftime('%A, %B %d at %I:%M %p')}. "
+        f"See you on the court!",
+        priority='high',
+        channel='both',
+        subject='Match Challenge Accepted',
+        metadata={'match_id': match.id, 'accepter_id': user_id}
+    )
+
+    # Schedule reminders for both players
+    schedule_match_reminders(db, match.id, match.player_a_id, match.start_time)
+    schedule_match_reminders(db, match.id, match.player_b_id, match.start_time)
+
     return match
 
 
@@ -216,6 +255,22 @@ def decline_challenge(db: Session, match_id: int, user_id: int) -> Match:
 
     db.commit()
     db.refresh(match)
+
+    # Get player names for notifications
+    player_b = db.query(User).filter(User.id == match.player_b_id).first()
+
+    # Notify Player A that the match was declined
+    queue_notification(
+        db,
+        match.player_a_id,
+        'match_declined',
+        f"{player_b.name} has declined your match challenge for {match.start_time.strftime('%A, %B %d at %I:%M %p')}. "
+        f"You can send a new challenge for a different time.",
+        priority='normal',
+        channel='both',
+        subject='Match Challenge Declined',
+        metadata={'match_id': match.id, 'decliner_id': user_id}
+    )
 
     return match
 
@@ -269,6 +324,50 @@ def cancel_match(db: Session, match_id: int, user_id: int, reason: Optional[str]
 
     db.commit()
     db.refresh(match)
+
+    # Get player names for notifications
+    canceling_user = db.query(User).filter(User.id == user_id).first()
+    player_a = db.query(User).filter(User.id == match.player_a_id).first()
+    player_b = db.query(User).filter(User.id == match.player_b_id).first()
+
+    # Determine priority based on how close to match start
+    hours_until_match = (match.start_time - now).total_seconds() / 3600
+    priority = 'critical' if hours_until_match < 4 else 'high'
+
+    # Build notification message
+    reason_text = f" Reason: {reason}" if reason else ""
+    cancellation_message = (
+        f"Your match on {match.start_time.strftime('%A, %B %d at %I:%M %p')} has been canceled by {canceling_user.name}."
+        f"{reason_text}"
+    )
+
+    # Notify both players (except the one who canceled)
+    if user_id != match.player_a_id:
+        queue_notification(
+            db,
+            match.player_a_id,
+            'match_canceled',
+            cancellation_message,
+            priority=priority,
+            channel='both',
+            subject='Match Canceled',
+            metadata={'match_id': match.id, 'canceled_by': user_id}
+        )
+
+    if user_id != match.player_b_id:
+        queue_notification(
+            db,
+            match.player_b_id,
+            'match_canceled',
+            cancellation_message,
+            priority=priority,
+            channel='both',
+            subject='Match Canceled',
+            metadata={'match_id': match.id, 'canceled_by': user_id}
+        )
+
+    # Cancel any pending reminders for this match
+    cancel_match_reminders(db, match.id)
 
     return match
 
