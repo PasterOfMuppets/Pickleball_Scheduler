@@ -24,23 +24,53 @@ const Dashboard: React.FC = () => {
           </p>
         </Link>
 
-        <div className="bg-gray-100 p-6 rounded-lg shadow opacity-50 cursor-not-allowed">
+        <Link
+          to="/find-opponents"
+          className="bg-white p-6 rounded-lg shadow hover:shadow-lg transition-shadow"
+        >
           <h2 className="text-xl font-semibold text-gray-900 mb-2">
             Find Opponents
           </h2>
           <p className="text-gray-600">
-            Coming soon...
+            Discover players with overlapping availability and schedule matches
           </p>
-        </div>
+        </Link>
 
-        <div className="bg-gray-100 p-6 rounded-lg shadow opacity-50 cursor-not-allowed">
+        <Link
+          to="/matches"
+          className="bg-white p-6 rounded-lg shadow hover:shadow-lg transition-shadow"
+        >
           <h2 className="text-xl font-semibold text-gray-900 mb-2">
             My Matches
           </h2>
           <p className="text-gray-600">
-            Coming soon...
+            View and manage your match challenges and upcoming games
           </p>
-        </div>
+        </Link>
+
+        <Link
+          to="/profile"
+          className="bg-white p-6 rounded-lg shadow hover:shadow-lg transition-shadow"
+        >
+          <h2 className="text-xl font-semibold text-gray-900 mb-2">
+            My Profile
+          </h2>
+          <p className="text-gray-600">
+            Update your contact information and vacation mode
+          </p>
+        </Link>
+
+        <Link
+          to="/notifications"
+          className="bg-white p-6 rounded-lg shadow hover:shadow-lg transition-shadow"
+        >
+          <h2 className="text-xl font-semibold text-gray-900 mb-2">
+            Notifications
+          </h2>
+          <p className="text-gray-600">
+            Manage SMS and email notification preferences
+          </p>
+        </Link>
       </div>
 
       <div className="mt-8 bg-blue-50 p-6 rounded-lg">

@@ -39,7 +39,15 @@ const Navbar: React.FC = () => {
             </div>
           </div>
           <div className="flex items-center space-x-4">
-            <span className="text-sm">{user.name}</span>
+            <Link
+              to="/profile"
+              className="text-sm hover:underline flex items-center"
+            >
+              <svg className="h-5 w-5 mr-1" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M16 7a4 4 0 11-8 0 4 4 0 018 0zM12 14a7 7 0 00-7 7h14a7 7 0 00-7-7z" />
+              </svg>
+              {user.name}
+            </Link>
             <button
               onClick={handleLogout}
               className="bg-blue-700 hover:bg-blue-800 px-4 py-2 rounded-md text-sm font-medium"

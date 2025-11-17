@@ -1,6 +1,7 @@
 import { BrowserRouter as Router, Routes, Route, Navigate } from 'react-router-dom';
 import { AuthProvider } from './context/AuthContext';
 import Navbar from './components/Navbar';
+import NotificationBanner from './components/NotificationBanner';
 import Login from './pages/Login';
 import Register from './pages/Register';
 import Dashboard from './pages/Dashboard';
@@ -8,6 +9,8 @@ import Availability from './pages/Availability';
 import Matches from './pages/Matches';
 import MatchDetail from './pages/MatchDetail';
 import FindOpponents from './pages/FindOpponents';
+import Profile from './pages/Profile';
+import NotificationPreferences from './pages/NotificationPreferences';
 import ProtectedRoute from './components/ProtectedRoute';
 
 function App() {
@@ -16,6 +19,7 @@ function App() {
       <AuthProvider>
         <div className="min-h-screen bg-gray-50">
           <Navbar />
+          <NotificationBanner />
           <Routes>
             <Route path="/login" element={<Login />} />
             <Route path="/register" element={<Register />} />
@@ -56,6 +60,22 @@ function App() {
               element={
                 <ProtectedRoute>
                   <FindOpponents />
+                </ProtectedRoute>
+              }
+            />
+            <Route
+              path="/profile"
+              element={
+                <ProtectedRoute>
+                  <Profile />
+                </ProtectedRoute>
+              }
+            />
+            <Route
+              path="/notifications"
+              element={
+                <ProtectedRoute>
+                  <NotificationPreferences />
                 </ProtectedRoute>
               }
             />
