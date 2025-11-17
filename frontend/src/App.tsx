@@ -2,6 +2,7 @@ import { BrowserRouter as Router, Routes, Route, Navigate } from 'react-router-d
 import { AuthProvider } from './context/AuthContext';
 import Navbar from './components/Navbar';
 import NotificationBanner from './components/NotificationBanner';
+import ImpersonationBanner from './components/ImpersonationBanner';
 import Login from './pages/Login';
 import Register from './pages/Register';
 import Dashboard from './pages/Dashboard';
@@ -11,6 +12,10 @@ import MatchDetail from './pages/MatchDetail';
 import FindOpponents from './pages/FindOpponents';
 import Profile from './pages/Profile';
 import NotificationPreferences from './pages/NotificationPreferences';
+import AdminDashboard from './pages/admin/Dashboard';
+import AdminUsers from './pages/admin/Users';
+import AdminMatches from './pages/admin/Matches';
+import AdminActionLog from './pages/admin/ActionLog';
 import ProtectedRoute from './components/ProtectedRoute';
 
 function App() {
@@ -18,6 +23,7 @@ function App() {
     <Router>
       <AuthProvider>
         <div className="min-h-screen bg-gray-50">
+          <ImpersonationBanner />
           <Navbar />
           <NotificationBanner />
           <Routes>
@@ -76,6 +82,38 @@ function App() {
               element={
                 <ProtectedRoute>
                   <NotificationPreferences />
+                </ProtectedRoute>
+              }
+            />
+            <Route
+              path="/admin"
+              element={
+                <ProtectedRoute>
+                  <AdminDashboard />
+                </ProtectedRoute>
+              }
+            />
+            <Route
+              path="/admin/users"
+              element={
+                <ProtectedRoute>
+                  <AdminUsers />
+                </ProtectedRoute>
+              }
+            />
+            <Route
+              path="/admin/matches"
+              element={
+                <ProtectedRoute>
+                  <AdminMatches />
+                </ProtectedRoute>
+              }
+            />
+            <Route
+              path="/admin/action-log"
+              element={
+                <ProtectedRoute>
+                  <AdminActionLog />
                 </ProtectedRoute>
               }
             />
