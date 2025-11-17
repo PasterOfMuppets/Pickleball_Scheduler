@@ -7,6 +7,7 @@ import Dashboard from './pages/Dashboard';
 import Availability from './pages/Availability';
 import Matches from './pages/Matches';
 import MatchDetail from './pages/MatchDetail';
+import FindOpponents from './pages/FindOpponents';
 import ProtectedRoute from './components/ProtectedRoute';
 
 function App() {
@@ -47,6 +48,14 @@ function App() {
               element={
                 <ProtectedRoute>
                   <MatchDetail />
+                </ProtectedRoute>
+              }
+            />
+            <Route
+              path="/find-opponents"
+              element={
+                <ProtectedRoute>
+                  <FindOpponents />
                 </ProtectedRoute>
               }
             />
