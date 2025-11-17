@@ -102,6 +102,28 @@ def check_vacation_end():
         db.close()
 
 
+def process_notifications():
+    """
+    Background job to process pending notifications.
+    Runs every minute.
+
+    Processes all notifications in the queue that are ready to send.
+    """
+    logger.info("Processing notification queue...")
+    db = SessionLocal()
+    try:
+        from app.services.notifications import process_notification_queue
+        count = process_notification_queue(db)
+        if count > 0:
+            logger.info(f"Processed {count} notifications")
+        else:
+            logger.debug("No notifications to process")
+    except Exception as e:
+        logger.error(f"Error processing notifications: {e}")
+    finally:
+        db.close()
+
+
 def cleanup_old_data():
     """
     Background job to clean up old data.
@@ -111,8 +133,36 @@ def cleanup_old_data():
     - Archive old availability blocks (>2 weeks in past)
     """
     logger.info("Running cleanup job...")
-    # TODO: Implement cleanup logic when notifications are added
-    logger.info("Cleanup completed")
+    db = SessionLocal()
+    try:
+        from app.models.notification import NotificationQueue
+        from app.models.availability import AvailabilityBlock
+        from datetime import datetime, timedelta
+
+        now = datetime.now(datetime.now().astimezone().tzinfo)
+        thirty_days_ago = now - timedelta(days=30)
+        two_weeks_ago = now - timedelta(weeks=2)
+
+        # Clean up old sent/failed notifications (>30 days)
+        deleted_notifications = db.query(NotificationQueue).filter(
+            NotificationQueue.scheduled_for < thirty_days_ago
+        ).delete(synchronize_session=False)
+
+        # Archive old availability blocks (>2 weeks in past)
+        # For now, we'll delete them. In production, you might want to move to an archive table
+        deleted_blocks = db.query(AvailabilityBlock).filter(
+            AvailabilityBlock.end_time < two_weeks_ago
+        ).delete(synchronize_session=False)
+
+        db.commit()
+
+        logger.info(f"Cleanup completed: {deleted_notifications} notifications, {deleted_blocks} availability blocks")
+
+    except Exception as e:
+        logger.error(f"Error during cleanup: {e}")
+        db.rollback()
+    finally:
+        db.close()
 
 
 def start_scheduler():
@@ -126,6 +176,15 @@ def start_scheduler():
         trigger=IntervalTrigger(minutes=5),
         id='check_expired_challenges',
         name='Check for expired challenges',
+        replace_existing=True
+    )
+
+    # Notification processing - every minute
+    scheduler.add_job(
+        process_notifications,
+        trigger=IntervalTrigger(minutes=1),
+        id='process_notifications',
+        name='Process notification queue',
         replace_existing=True
     )
 
