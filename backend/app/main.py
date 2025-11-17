@@ -31,6 +31,20 @@ app.add_middleware(
 )
 
 
+@app.on_event("startup")
+async def startup_event():
+    """Start background jobs on application startup."""
+    from app.background.jobs import start_scheduler
+    start_scheduler()
+
+
+@app.on_event("shutdown")
+async def shutdown_event():
+    """Stop background jobs on application shutdown."""
+    from app.background.jobs import shutdown_scheduler
+    shutdown_scheduler()
+
+
 @app.get("/")
 def root():
     """Root endpoint."""
@@ -63,8 +77,9 @@ def health_check_db():
 
 
 # Import and include routers
-from app.routes import auth, users, availability
+from app.routes import auth, users, availability, matches
 
 app.include_router(auth.router, prefix="/api/auth", tags=["Authentication"])
 app.include_router(users.router, prefix="/api/users", tags=["Users"])
 app.include_router(availability.router, prefix="/api/availability", tags=["Availability"])
+app.include_router(matches.router, prefix="/api/matches", tags=["Matches"])
