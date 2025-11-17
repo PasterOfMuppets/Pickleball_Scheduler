@@ -1,5 +1,6 @@
 import { useState, useEffect } from 'react';
 import { useAuth } from '../context/AuthContext';
+import { useToast } from '../context/ToastContext';
 import PlayerCard from '../components/PlayerCard';
 import SharedCalendar from '../components/SharedCalendar';
 import ChallengeModal from '../components/ChallengeModal';
@@ -31,6 +32,7 @@ interface SharedAvailability {
 
 export default function FindOpponents() {
   const { token } = useAuth();
+  const toast = useToast();
   const [players, setPlayers] = useState<PlayerOverlap[]>([]);
   const [loading, setLoading] = useState(true);
   const [error, setError] = useState<string | null>(null);
@@ -84,7 +86,7 @@ export default function FindOpponents() {
       setSharedAvailability(response.data);
     } catch (err: any) {
       console.error('Error fetching shared availability:', err);
-      alert(err.response?.data?.detail || 'Failed to load shared availability');
+      toast.error(err.response?.data?.message || err.response?.data?.detail || 'Failed to load shared availability');
     } finally {
       setLoadingShared(false);
     }
