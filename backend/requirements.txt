@@ -1,0 +1,33 @@
+# FastAPI and server
+fastapi==0.104.1
+uvicorn[standard]==0.24.0
+python-multipart==0.0.6
+
+# Database
+sqlalchemy>=2.0.36
+alembic>=1.14.0
+psycopg[binary]>=3.2.12
+
+# Authentication
+python-jose[cryptography]==3.3.0
+passlib[bcrypt]==1.7.4
+python-multipart==0.0.6
+
+# Background jobs
+apscheduler==3.10.4
+
+# Rate limiting
+slowapi==0.1.9
+
+# External services
+twilio==8.10.0
+sendgrid==6.11.0
+
+# Utilities
+python-dotenv==1.0.0
+pytz==2023.3
+
+# Development
+pytest==7.4.3
+pytest-cov==4.1.0
+httpx==0.25.1
