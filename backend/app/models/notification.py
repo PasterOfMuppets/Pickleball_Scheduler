@@ -65,7 +65,7 @@ class NotificationQueue(Base):
     channel = Column(String(10), nullable=False)  # sms | email | both
     subject = Column(String(255), nullable=True)
     message = Column(Text, nullable=False)
-    metadata = Column(JSONB, nullable=True)  # Match ID, challenge ID, etc.
+    extra_data = Column(JSONB, nullable=True)  # Match ID, challenge ID, etc.
 
     scheduled_for = Column(DateTime(timezone=True), nullable=False)
     sent_at = Column(DateTime(timezone=True), nullable=True)
