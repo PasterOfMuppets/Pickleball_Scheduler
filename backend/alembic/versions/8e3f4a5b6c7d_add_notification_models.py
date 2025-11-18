@@ -53,7 +53,7 @@ def upgrade() -> None:
         sa.Column('channel', sa.String(length=10), nullable=False),
         sa.Column('subject', sa.String(length=255), nullable=True),
         sa.Column('message', sa.Text(), nullable=False),
-        sa.Column('metadata', postgresql.JSONB(astext_type=sa.Text()), nullable=True),
+        sa.Column('extra_data', postgresql.JSONB(astext_type=sa.Text()), nullable=True),
         sa.Column('scheduled_for', sa.TIMESTAMP(timezone=True), nullable=False),
         sa.Column('sent_at', sa.TIMESTAMP(timezone=True), nullable=True),
         sa.Column('failed_at', sa.TIMESTAMP(timezone=True), nullable=True),

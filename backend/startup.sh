@@ -19,9 +19,29 @@ with engine.connect() as conn:
     has_alembic = 'alembic_version' in tables
     has_users = 'users' in tables
 
+    # Check for schema issues (like old metadata column instead of extra_data)
+    needs_reset = False
+
     if has_alembic and not has_users:
-        print("Detected incomplete migration state - resetting alembic_version...")
+        print("Detected incomplete migration state - users table missing...")
+        needs_reset = True
+    elif 'notification_queue' in tables:
+        # Check if notification_queue has old 'metadata' column instead of 'extra_data'
+        columns = [col['name'] for col in inspector.get_columns('notification_queue')]
+        if 'metadata' in columns and 'extra_data' not in columns:
+            print("Detected old schema - notification_queue has 'metadata' column instead of 'extra_data'...")
+            needs_reset = True
+
+    if needs_reset:
+        print("Resetting database schema...")
         conn.execute(text("DROP TABLE IF EXISTS alembic_version CASCADE"))
+        conn.execute(text("DROP TABLE IF EXISTS notification_queue CASCADE"))
+        conn.execute(text("DROP TABLE IF EXISTS notification_preferences CASCADE"))
+        conn.execute(text("DROP TABLE IF EXISTS admin_action_log CASCADE"))
+        conn.execute(text("DROP TABLE IF EXISTS matches CASCADE"))
+        conn.execute(text("DROP TABLE IF EXISTS availability_blocks CASCADE"))
+        conn.execute(text("DROP TABLE IF EXISTS recurring_availability CASCADE"))
+        conn.execute(text("DROP TABLE IF EXISTS users CASCADE"))
         conn.commit()
         print("Reset complete. Migrations will run from scratch.")
     elif has_alembic and has_users:
