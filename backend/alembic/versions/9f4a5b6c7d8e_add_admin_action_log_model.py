@@ -29,7 +29,7 @@ def upgrade() -> None:
         sa.Column('action', sa.String(length=100), nullable=False),
         sa.Column('resource_type', sa.String(length=50), nullable=True),
         sa.Column('resource_id', sa.BigInteger(), nullable=True),
-        sa.Column('metadata', postgresql.JSONB(astext_type=sa.Text()), nullable=True),
+        sa.Column('extra_data', postgresql.JSONB(astext_type=sa.Text()), nullable=True),
         sa.Column('description', sa.Text(), nullable=True),
         sa.Column('timestamp', sa.TIMESTAMP(timezone=True), nullable=False, server_default=sa.text('NOW()')),
         sa.ForeignKeyConstraint(['admin_id'], ['users.id'], ),

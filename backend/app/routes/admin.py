@@ -72,7 +72,7 @@ class AdminActionLogResponse(BaseModel):
     action: str
     resource_type: Optional[str]
     resource_id: Optional[int]
-    metadata: Optional[dict]
+    extra_data: Optional[dict]
     description: Optional[str]
     timestamp: str
 
@@ -209,7 +209,7 @@ async def update_user_status(
         action="update_user_status",
         resource_type="user",
         resource_id=user.id,
-        metadata={
+        extra_data={
             "old_status": old_status,
             "new_status": update_data.status,
             "old_vacation_until": old_vacation_until.isoformat() if old_vacation_until else None,
@@ -378,7 +378,7 @@ async def get_action_log(
             action=entry.action,
             resource_type=entry.resource_type,
             resource_id=entry.resource_id,
-            metadata=entry.metadata,
+            extra_data=entry.extra_data,
             description=entry.description,
             timestamp=entry.timestamp.isoformat()
         ))
@@ -622,7 +622,7 @@ async def cancel_match_admin(
         action="cancel_match",
         resource_type="match",
         resource_id=match.id,
-        metadata={
+        extra_data={
             "old_status": old_status,
             "reason": cancel_data.reason,
             "player_a_id": match.player_a_id,

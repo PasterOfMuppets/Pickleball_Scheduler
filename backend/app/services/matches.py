@@ -138,7 +138,7 @@ def create_challenge(
         priority='high',
         channel='both',
         subject='New Match Challenge',
-        metadata={'match_id': match.id, 'challenger_id': player_a_id}
+        extra_data={'match_id': match.id, 'challenger_id': player_a_id}
     )
 
     return match
@@ -209,7 +209,7 @@ def accept_challenge(db: Session, match_id: int, user_id: int) -> Match:
         priority='high',
         channel='both',
         subject='Match Challenge Accepted',
-        metadata={'match_id': match.id, 'accepter_id': user_id}
+        extra_data={'match_id': match.id, 'accepter_id': user_id}
     )
 
     # Schedule reminders for both players
@@ -269,7 +269,7 @@ def decline_challenge(db: Session, match_id: int, user_id: int) -> Match:
         priority='normal',
         channel='both',
         subject='Match Challenge Declined',
-        metadata={'match_id': match.id, 'decliner_id': user_id}
+        extra_data={'match_id': match.id, 'decliner_id': user_id}
     )
 
     return match
@@ -351,7 +351,7 @@ def cancel_match(db: Session, match_id: int, user_id: int, reason: Optional[str]
             priority=priority,
             channel='both',
             subject='Match Canceled',
-            metadata={'match_id': match.id, 'canceled_by': user_id}
+            extra_data={'match_id': match.id, 'canceled_by': user_id}
         )
 
     if user_id != match.player_b_id:
@@ -363,7 +363,7 @@ def cancel_match(db: Session, match_id: int, user_id: int, reason: Optional[str]
             priority=priority,
             channel='both',
             subject='Match Canceled',
-            metadata={'match_id': match.id, 'canceled_by': user_id}
+            extra_data={'match_id': match.id, 'canceled_by': user_id}
         )
 
     # Cancel any pending reminders for this match

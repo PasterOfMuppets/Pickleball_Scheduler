@@ -22,7 +22,7 @@ class AdminActionLog(Base):
     action = Column(String(100), nullable=False)  # e.g., "impersonate_start", "update_user_status", "cancel_match"
     resource_type = Column(String(50), nullable=True)  # e.g., "user", "match", "availability"
     resource_id = Column(Integer, nullable=True)
-    metadata = Column(JSON, nullable=True)  # Additional context (old/new values, etc.)
+    extra_data = Column(JSON, nullable=True)  # Additional context (old/new values, etc.)
     description = Column(Text, nullable=True)  # Human-readable description
     timestamp = Column(DateTime, nullable=False, default=datetime.utcnow, index=True)
 

@@ -63,7 +63,7 @@ def log_admin_action(
         action=action,
         resource_type=resource_type,
         resource_id=resource_id,
-        metadata=metadata,
+        extra_data=metadata,
         description=description
     )
 

@@ -137,7 +137,7 @@ def queue_notification(
         channel=channel,
         subject=subject,
         message=message,
-        metadata=metadata,
+        extra_data=metadata,
         scheduled_for=scheduled_for
     )
 
@@ -464,7 +464,7 @@ def schedule_match_reminders(db: Session, match_id: int, user_id: int, match_sta
             priority='high',
             channel='both',
             subject='Match Reminder - 24 Hours',
-            metadata={'match_id': match_id},
+            extra_data={'match_id': match_id},
             scheduled_for=reminder_24h_time
         )
 
@@ -479,7 +479,7 @@ def schedule_match_reminders(db: Session, match_id: int, user_id: int, match_sta
             priority='critical',  # Critical so it ignores quiet hours
             channel='both',
             subject='Match Reminder - 2 Hours',
-            metadata={'match_id': match_id},
+            extra_data={'match_id': match_id},
             scheduled_for=reminder_2h_time
         )
 
@@ -495,7 +495,7 @@ def cancel_match_reminders(db: Session, match_id: int):
     # Delete unsent reminders
     deleted_count = db.query(NotificationQueue).filter(
         and_(
-            NotificationQueue.metadata['match_id'].astext == str(match_id),
+            NotificationQueue.extra_data['match_id'].astext == str(match_id),
             NotificationQueue.notification_type.in_(['match_reminder_24h', 'match_reminder_2h']),
             NotificationQueue.sent_at.is_(None),
             NotificationQueue.failed_at.is_(None)
