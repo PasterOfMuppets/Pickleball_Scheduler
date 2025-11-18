@@ -32,4 +32,4 @@ HEALTHCHECK --interval=30s --timeout=10s --start-period=40s --retries=3 \
     CMD python -c "import requests; requests.get('http://localhost:6900/health', timeout=5)" || exit 1
 
 # Run database migrations and start server
-CMD ["./startup.sh"]
+CMD ["bash", "startup.sh"]
