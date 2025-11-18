@@ -64,6 +64,8 @@ services:
     volumes:
       # For development hot-reload (comment out for production)
       - ./backend/app:/app/app
+      - ./backend/alembic:/app/alembic
+      - ./backend/startup.sh:/app/startup.sh
     restart: unless-stopped
 
   # React Frontend (Development mode)
