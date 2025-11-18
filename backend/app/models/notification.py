@@ -1,7 +1,7 @@
 """Notification models for preferences and queue."""
 from datetime import time
-from sqlalchemy import Column, BigInteger, String, Boolean, Text, Time, Integer, ForeignKey
-from sqlalchemy.dialects.postgresql import TIMESTAMPTZ, JSONB
+from sqlalchemy import Column, BigInteger, String, Boolean, Text, Time, Integer, ForeignKey, DateTime
+from sqlalchemy.dialects.postgresql import JSONB
 from sqlalchemy.orm import relationship
 from app.database import Base
 
@@ -20,7 +20,7 @@ class NotificationPreferences(Base):
     # Channel preferences
     email_enabled = Column(Boolean, nullable=False, default=True)
     sms_opt_in = Column(Boolean, nullable=False, default=False)
-    sms_opt_in_at = Column(TIMESTAMPTZ, nullable=True)
+    sms_opt_in_at = Column(DateTime(timezone=True), nullable=True)
 
     # What to notify about
     notify_match_requests = Column(Boolean, nullable=False, default=True)
@@ -34,12 +34,12 @@ class NotificationPreferences(Base):
     quiet_hours_end = Column(Time, nullable=False, default=time(7, 0))     # 7 AM
 
     # Delivery status tracking
-    last_sms_failure_at = Column(TIMESTAMPTZ, nullable=True)
-    last_email_failure_at = Column(TIMESTAMPTZ, nullable=True)
+    last_sms_failure_at = Column(DateTime(timezone=True), nullable=True)
+    last_email_failure_at = Column(DateTime(timezone=True), nullable=True)
     sms_consecutive_failures = Column(Integer, nullable=False, default=0)
 
-    created_at = Column(TIMESTAMPTZ, nullable=False, server_default="NOW()")
-    updated_at = Column(TIMESTAMPTZ, nullable=False, server_default="NOW()", onupdate="NOW()")
+    created_at = Column(DateTime(timezone=True), nullable=False, server_default="NOW()")
+    updated_at = Column(DateTime(timezone=True), nullable=False, server_default="NOW()", onupdate="NOW()")
 
     # Relationships
     user = relationship("User", backref="notification_preferences")
@@ -67,13 +67,13 @@ class NotificationQueue(Base):
     message = Column(Text, nullable=False)
     metadata = Column(JSONB, nullable=True)  # Match ID, challenge ID, etc.
 
-    scheduled_for = Column(TIMESTAMPTZ, nullable=False)
-    sent_at = Column(TIMESTAMPTZ, nullable=True)
-    failed_at = Column(TIMESTAMPTZ, nullable=True)
+    scheduled_for = Column(DateTime(timezone=True), nullable=False)
+    sent_at = Column(DateTime(timezone=True), nullable=True)
+    failed_at = Column(DateTime(timezone=True), nullable=True)
     failure_reason = Column(Text, nullable=True)
     fallback_sent = Column(Boolean, nullable=False, default=False)  # SMS→email fallback occurred
 
-    created_at = Column(TIMESTAMPTZ, nullable=False, server_default="NOW()")
+    created_at = Column(DateTime(timezone=True), nullable=False, server_default="NOW()")
 
     # Relationships
     user = relationship("User", backref="notifications")
