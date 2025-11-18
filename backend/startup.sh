@@ -32,6 +32,13 @@ with engine.connect() as conn:
             print("Detected old schema - notification_queue has 'metadata' column instead of 'extra_data'...")
             needs_reset = True
 
+    if not needs_reset and 'admin_action_log' in tables:
+        # Check if admin_action_log has old 'metadata' column instead of 'extra_data'
+        columns = [col['name'] for col in inspector.get_columns('admin_action_log')]
+        if 'metadata' in columns and 'extra_data' not in columns:
+            print("Detected old schema - admin_action_log has 'metadata' column instead of 'extra_data'...")
+            needs_reset = True
+
     if needs_reset:
         print("Resetting database schema...")
         conn.execute(text("DROP TABLE IF EXISTS alembic_version CASCADE"))
