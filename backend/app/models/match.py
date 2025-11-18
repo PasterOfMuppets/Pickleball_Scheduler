@@ -1,5 +1,4 @@
-from sqlalchemy import Column, BigInteger, String, Text, ForeignKey, CheckConstraint, Index
-from sqlalchemy.dialects.postgresql import TIMESTAMPTZ
+from sqlalchemy import Column, BigInteger, String, Text, ForeignKey, CheckConstraint, Index, DateTime
 from sqlalchemy.orm import relationship
 from app.database import Base
 
@@ -20,8 +19,8 @@ class Match(Base):
     id = Column(BigInteger, primary_key=True, index=True)
     player_a_id = Column(BigInteger, ForeignKey("users.id"), nullable=False)
     player_b_id = Column(BigInteger, ForeignKey("users.id"), nullable=False)
-    start_time = Column(TIMESTAMPTZ, nullable=False)
-    end_time = Column(TIMESTAMPTZ, nullable=False)
+    start_time = Column(DateTime(timezone=True), nullable=False)
+    end_time = Column(DateTime(timezone=True), nullable=False)
     status = Column(String(20), nullable=False)  # pending | confirmed | declined | expired | canceled
     created_by = Column(BigInteger, ForeignKey("users.id"), nullable=False)
 
@@ -30,11 +29,11 @@ class Match(Base):
     cancellation_reason = Column(Text, nullable=True)
 
     # Timestamps for lifecycle tracking
-    created_at = Column(TIMESTAMPTZ, nullable=False, server_default="NOW()")
-    confirmed_at = Column(TIMESTAMPTZ, nullable=True)
-    declined_at = Column(TIMESTAMPTZ, nullable=True)
-    canceled_at = Column(TIMESTAMPTZ, nullable=True)
-    updated_at = Column(TIMESTAMPTZ, nullable=False, server_default="NOW()", onupdate="NOW()")
+    created_at = Column(DateTime(timezone=True), nullable=False, server_default="NOW()")
+    confirmed_at = Column(DateTime(timezone=True), nullable=True)
+    declined_at = Column(DateTime(timezone=True), nullable=True)
+    canceled_at = Column(DateTime(timezone=True), nullable=True)
+    updated_at = Column(DateTime(timezone=True), nullable=False, server_default="NOW()", onupdate="NOW()")
 
     # Relationships
     player_a = relationship("User", foreign_keys=[player_a_id], backref="matches_as_player_a")
