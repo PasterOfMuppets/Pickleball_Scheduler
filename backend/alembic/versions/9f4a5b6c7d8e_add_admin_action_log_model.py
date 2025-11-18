@@ -31,7 +31,7 @@ def upgrade() -> None:
         sa.Column('resource_id', sa.BigInteger(), nullable=True),
         sa.Column('metadata', postgresql.JSONB(astext_type=sa.Text()), nullable=True),
         sa.Column('description', sa.Text(), nullable=True),
-        sa.Column('timestamp', postgresql.TIMESTAMPTZ(), nullable=False, server_default=sa.text('NOW()')),
+        sa.Column('timestamp', sa.TIMESTAMP(timezone=True), nullable=False, server_default=sa.text('NOW()')),
         sa.ForeignKeyConstraint(['admin_id'], ['users.id'], ),
         sa.ForeignKeyConstraint(['acting_as_user_id'], ['users.id'], ),
         sa.PrimaryKeyConstraint('id')
