@@ -21,6 +21,9 @@ COPY . .
 # Create directory for alembic
 RUN mkdir -p alembic/versions
 
+# Make startup script executable
+RUN chmod +x startup.sh
+
 # Expose port
 EXPOSE 6900
 
@@ -29,5 +32,4 @@ HEALTHCHECK --interval=30s --timeout=10s --start-period=40s --retries=3 \
     CMD python -c "import requests; requests.get('http://localhost:6900/health', timeout=5)" || exit 1
 
 # Run database migrations and start server
-CMD alembic upgrade head && \
-    uvicorn app.main:app --host 0.0.0.0 --port 6900
+CMD ["./startup.sh"]
