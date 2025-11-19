@@ -89,7 +89,7 @@ def health_check_db():
 
 
 # Import and include routers
-from app.routes import auth, users, availability, matches, overlap, notifications, admin, events
+from app.routes import auth, users, availability, matches, overlap, notifications, admin, events, players
 
 app.include_router(auth.router, prefix="/api/auth", tags=["Authentication"])
 app.include_router(users.router, prefix="/api/users", tags=["Users"])
@@ -99,3 +99,4 @@ app.include_router(overlap.router, prefix="/api/overlap", tags=["Overlap Detecti
 app.include_router(notifications.router, prefix="/api/notifications", tags=["Notifications"])
 app.include_router(admin.router, prefix="/api/admin", tags=["Admin"])
 app.include_router(events.router, prefix="/api/events", tags=["Events"])
+app.include_router(players.router, prefix="/api/players", tags=["Players"])
