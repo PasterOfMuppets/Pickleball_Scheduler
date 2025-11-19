@@ -24,6 +24,13 @@ class FoundryResultsResponse(BaseModel):
     message: str
 
 
+class ContributionResponse(BaseModel):
+    """Response model for contributions data."""
+    contributions: List[Any]
+    total: int
+    message: str
+
+
 @router.get("/bear")
 def get_bear_events(
     current_user: User = Depends(get_current_user),
@@ -68,6 +75,31 @@ def get_foundry_results(
         results=[],
         total=0,
         message=f"Foundry results endpoint is available for event {event_id}. Results features are not yet implemented."
+    )
+
+
+@router.get("/contribution")
+def get_contributions(
+    current_user: User = Depends(get_current_user),
+    db: Session = Depends(get_db)
+) -> ContributionResponse:
+    """
+    Get contribution data for events.
+
+    This endpoint handles requests from external applications or browser extensions
+    that may be trying to fetch contribution statistics or analytics.
+
+    Args:
+        current_user: The authenticated user making the request
+        db: Database session
+
+    Returns:
+        ContributionResponse: Empty contributions list with informational message
+    """
+    return ContributionResponse(
+        contributions=[],
+        total=0,
+        message="Contribution endpoint is available. Contribution tracking features are not yet implemented."
     )
 
 
