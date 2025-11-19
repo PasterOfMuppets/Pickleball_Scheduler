@@ -9,8 +9,7 @@ import ImpersonationBanner from './components/ImpersonationBanner';
 import ProtectedRoute from './components/ProtectedRoute';
 
 // Lazy load page components for better performance
-const Login = lazy(() => import('./pages/Login'));
-const Register = lazy(() => import('./pages/Register'));
+const AuthPage = lazy(() => import('./pages/AuthPage'));
 const Dashboard = lazy(() => import('./pages/Dashboard'));
 const Availability = lazy(() => import('./pages/Availability'));
 const Matches = lazy(() => import('./pages/Matches'));
@@ -42,8 +41,8 @@ function App() {
             <NotificationBanner />
           <Suspense fallback={<LoadingSpinner />}>
             <Routes>
-            <Route path="/login" element={<Login />} />
-            <Route path="/register" element={<Register />} />
+            <Route path="/login" element={<AuthPage />} />
+            <Route path="/register" element={<AuthPage />} />
             <Route
               path="/"
               element={
