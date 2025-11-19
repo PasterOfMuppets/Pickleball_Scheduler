@@ -88,6 +88,44 @@ def health_check_db():
         return {"status": "unhealthy", "database": "disconnected", "error": str(e)}
 
 
+@app.post("/api/login")
+async def login_compatibility():
+    """
+    Compatibility endpoint for /api/login.
+
+    Returns an informational message directing clients to use /api/auth/login instead.
+    This handles requests from browser extensions or external services that may be
+    expecting a login endpoint at this path.
+    """
+    from fastapi.responses import JSONResponse
+    return JSONResponse(
+        status_code=200,
+        content={
+            "message": "Login endpoint has moved to /api/auth/login",
+            "endpoint": "/api/auth/login",
+            "note": "Please update your client to use the correct authentication endpoint"
+        }
+    )
+
+
+@app.post("/api/register")
+async def register_compatibility():
+    """
+    Compatibility endpoint for /api/register.
+
+    Returns an informational message directing clients to use /api/auth/register instead.
+    """
+    from fastapi.responses import JSONResponse
+    return JSONResponse(
+        status_code=200,
+        content={
+            "message": "Register endpoint has moved to /api/auth/register",
+            "endpoint": "/api/auth/register",
+            "note": "Please update your client to use the correct authentication endpoint"
+        }
+    )
+
+
 # Import and include routers
 from app.routes import auth, users, availability, matches, overlap, notifications, admin, events, players
 
