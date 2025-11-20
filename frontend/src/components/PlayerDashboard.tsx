@@ -80,7 +80,7 @@ export function PlayerDashboard() {
     <div className="p-4 md:p-6 space-y-6">
       {/* Header */}
       <div>
-        <h1 className="text-3xl font-bold text-gray-900">Welcome back, {user.name.split(' ')[0]}</h1>
+        <h1>Welcome back, {user.name.split(' ')[0]}</h1>
         <p className="text-slate-500 mt-1">Here's your schedule overview</p>
       </div>
 
@@ -109,7 +109,7 @@ export function PlayerDashboard() {
           <div className="flex items-start justify-between mb-4">
             <div>
               <p className="text-sm text-slate-500 mb-1">Next Match</p>
-              <h2 className="text-xl font-semibold">
+              <h2>
                 {nextMatch.player_a.id === user.id
                   ? `You vs ${nextMatch.player_b.name}`
                   : `${nextMatch.player_a.name} vs You`}
@@ -144,7 +144,7 @@ export function PlayerDashboard() {
       {/* Pending Challenges */}
       {(incomingChallenges.length > 0 || outgoingChallenges.length > 0) && (
         <div className="bg-white rounded-xl p-6 shadow-sm border border-slate-200">
-          <h3 className="text-lg font-semibold mb-4">Pending Challenges</h3>
+          <h3 className="mb-4">Pending Challenges</h3>
           <div className="space-y-3">
             {incomingChallenges.map(match => (
               <div
@@ -190,7 +190,7 @@ export function PlayerDashboard() {
 
       {/* Quick Actions */}
       <div>
-        <h3 className="text-lg font-semibold mb-4">Quick Actions</h3>
+        <h3 className="mb-4">Quick Actions</h3>
         <div className="grid grid-cols-1 sm:grid-cols-2 gap-3">
           <Button
             variant="outline"
@@ -244,15 +244,15 @@ export function PlayerDashboard() {
 
       {/* Weekly Summary */}
       <div className="bg-white rounded-xl p-6 shadow-sm border border-slate-200">
-        <h3 className="text-lg font-semibold mb-4">This Week</h3>
+        <h3 className="mb-4">This Week</h3>
         <div className="space-y-3">
           <div className="flex justify-between items-center">
             <span className="text-slate-600">Confirmed matches</span>
-            <span className="font-medium">{upcomingMatches.length}</span>
+            <span>{upcomingMatches.length}</span>
           </div>
           <div className="flex justify-between items-center">
             <span className="text-slate-600">Pending responses</span>
-            <span className="text-amber-600 font-medium">{incomingChallenges.length}</span>
+            <span className="text-amber-600">{incomingChallenges.length}</span>
           </div>
         </div>
       </div>
